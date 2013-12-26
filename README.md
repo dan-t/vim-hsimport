@@ -5,7 +5,7 @@ The Vim plugin for the command line program [hsimport](<https://github.com/dan-t
 
 In conjunction to the [hsimport](<https://github.com/dan-t/hsimport>) command the Vim plugin also
 uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim plugin
-[vim-hdevtools](<https://github.com/bitc/hdevtools/>).
+[vim-hdevtools](<https://github.com/bitc/vim-hdevtools/>).
 
 Currently you need to use forks of `hdevtools` and `vim-hdevtools` to get a working
 version of `vim-hsimport`, please see the installation section for details.
@@ -94,4 +94,4 @@ Features
 Credits
 -------
 
-Heavily inspired by [vim-hdevtools](<https://github.com/bitc/hdevtools/>).
+Heavily inspired by [vim-hdevtools](<https://github.com/bitc/vim-hdevtools/>).
