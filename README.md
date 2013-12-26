@@ -16,46 +16,46 @@ Installation
 1. Ensure that you're having a cabal-install version greater or equal than 1.18, to be able
    to use cabal sandboxes. You can update your version by:
 
-    $ cabal install cabal-install
+        $ cabal install cabal-install
 
 2. Install `hsimport`, using a `cabal sandbox` is the recommend way:
 
-    $ mkdir your_hsimport_build_dir
-    $ cabal sandbox init
-    $ cabal install hsimport
+        $ mkdir your_hsimport_build_dir
+        $ cabal sandbox init
+        $ cabal install hsimport
    
     Your `hsimport` binary is now at `your_hsimport_build_dir/.cabal-sandbox/bin/hsimport`.
 
     You now most likely want to create a symbolic link from a directory which is contained
     inside of your $PATH e.g:
 
-    $ ln -s your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport 
+        $ ln -s your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport 
 
 3. Install the fork of `hdevtools`, using a `cabal sandbox` is the recommend way:
 
-    $ mkdir your_hdevtools_build_dir
-    $ git clone https://github.com/dan-t/hdevtools
-    $ cabal sandbox init
-    $ cabal install
+        $ mkdir your_hdevtools_build_dir
+        $ git clone https://github.com/dan-t/hdevtools
+        $ cabal sandbox init
+        $ cabal install
 
     Your `hdevtools` binary is now at `your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools`.
     
     You now most likely want to create a symbolic link from a directory which is contained
     inside of your $PATH e.g:
 
-    $ ln -s your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
+        $ ln -s your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
 
 4. Install `vim-hsimport`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
-    $ cd ~/.vim/bundle
-    $ git clone https://github.com/dan-t/vim-hsimport
+        $ cd ~/.vim/bundle
+        $ git clone https://github.com/dan-t/vim-hsimport
 
 5. Install the fork of `vim-hdevtools`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
-    $ cd ~/.vim/bundle
-    $ git clone https://github.com/dan-t/vim-hdevtools  
+        $ cd ~/.vim/bundle
+        $ git clone https://github.com/dan-t/vim-hdevtools  
 
 Configuration
 -------------
@@ -88,6 +88,7 @@ Features
 --------
 
 `HsimportModule` imports the whole module of the symbol/identifier under the cursor.
+
 `HsimportSymbol` imports only the symbol/indentifier under the cursor.
 
 Credits
