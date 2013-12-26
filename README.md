@@ -21,6 +21,7 @@ Installation
 2. Install `hsimport`, using a `cabal sandbox` is the recommend way:
 
         $ mkdir your_hsimport_build_dir
+        $ cd your_hsimport_build_dir
         $ cabal sandbox init
         $ cabal install hsimport
    
@@ -33,8 +34,8 @@ Installation
 
 3. Install the fork of `hdevtools`, using a `cabal sandbox` is the recommend way:
 
-        $ mkdir your_hdevtools_build_dir
-        $ git clone https://github.com/dan-t/hdevtools
+        $ git clone https://github.com/dan-t/hdevtools your_hdevtools_build_dir
+        $ cd your_hdevtools_build_dir
         $ cabal sandbox init
         $ cabal install
 
