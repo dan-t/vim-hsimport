@@ -83,7 +83,6 @@ endfunction
 
 function! hsimport#call(module, symbol, srcFile)
   let l:cmd = hsimport#build_command(a:module, a:symbol, a:srcFile)
-  call hsimport#print_warning('Caching Module Informations ...')
   let l:output = system(l:cmd)
   echomsg ''
   let l:lines = split(l:output, '\n')
@@ -94,7 +93,6 @@ function! hsimport#call(module, symbol, srcFile)
     endfor
   else
     exec 'edit ' . a:srcFile
-    echomsg 'Symbol ' . a:symbol . ' imported from ' . a:module
   endif
 endfunction
 
