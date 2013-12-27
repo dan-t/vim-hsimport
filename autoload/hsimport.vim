@@ -82,7 +82,8 @@ endfunction
 
 
 function! hsimport#call(module, symbol, srcFile)
-  let l:pos = getpos(".")
+  let l:cursorPos = getpos('.')
+  let l:numLinesBefore = line('$')
   let l:cmd = hsimport#build_command(a:module, a:symbol, a:srcFile)
   let l:output = system(l:cmd)
   echomsg ''
@@ -95,7 +96,12 @@ function! hsimport#call(module, symbol, srcFile)
   else
     exec 'edit ' . a:srcFile
   endif
-  call setpos(".", l:pos)
+
+  " keep cursor at the same position
+  let l:numLinesAfter = line('$')
+  let l:lineNumDiff = l:numLinesAfter - l:numLinesBefore
+  let l:cursorPos[1] = l:cursorPos[1] + l:lineNumDiff
+  call setpos('.', l:cursorPos)
 endfunction
 
 
