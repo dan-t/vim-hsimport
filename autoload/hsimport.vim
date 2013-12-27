@@ -17,7 +17,7 @@ function! hsimport#import_symbol(symbol)
     return ''
   endif
 
-  let l:module = hsimport#select_module(symbol)
+  let l:module = hsimport#select_module(l:symbol)
   if l:module ==# ''
     return
   endif
