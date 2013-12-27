@@ -28,7 +28,7 @@ Installation
     Your `hsimport` binary is now at `your_hsimport_build_dir/.cabal-sandbox/bin/hsimport`.
 
     You now most likely want to create a symbolic link from a directory which is contained
-    inside of your $PATH e.g:
+    inside of your $PATH e.g.:
 
         $ ln -s your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport 
 
@@ -42,7 +42,7 @@ Installation
     Your `hdevtools` binary is now at `your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools`.
     
     You now most likely want to create a symbolic link from a directory which is contained
-    inside of your $PATH e.g:
+    inside of your $PATH e.g.:
 
         $ ln -s your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
 
@@ -82,8 +82,8 @@ For Vim put the following into your `~/.vimrc`:
 
 You also most likely want to add keybindings for the two avialable commands into your `~/.vimrc` e.g.:
 
-    nmap <silent> <F1> HsimportModule<CR>
-    nmap <silent> <F2> HsimportSymbol<CR>
+    nmap <silent> <F1> :update <bar> HsimportModule<CR>
+    nmap <silent> <F2> :update <bar> HsimportSymbol<CR>
 
 Features
 --------
@@ -91,6 +91,9 @@ Features
 `HsimportModule` imports the whole module of the symbol/identifier under the cursor.
 
 `HsimportSymbol` imports only the symbol/indentifier under the cursor.
+
+The first call of either command might take several seconds, because `hdevtools` has to
+cache all of the modul informations.
 
 Credits
 -------
