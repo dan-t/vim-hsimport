@@ -82,6 +82,7 @@ endfunction
 
 
 function! hsimport#call(module, symbol, srcFile)
+  let l:pos = getpos(".")
   let l:cmd = hsimport#build_command(a:module, a:symbol, a:srcFile)
   let l:output = system(l:cmd)
   echomsg ''
@@ -94,6 +95,7 @@ function! hsimport#call(module, symbol, srcFile)
   else
     exec 'edit ' . a:srcFile
   endif
+  call setpos(".", l:pos)
 endfunction
 
 
