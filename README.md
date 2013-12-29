@@ -69,16 +69,13 @@ the sandbox is located.
 
 For Vim put the following into your `~/.vimrc`:
 
-    function! FindCabalSandbox()
-        return finddir('.cabal-sandbox', './;')
-    endfunction
-    
     function! FindCabalSandboxPackageConf()
-        let l:path    = glob(FindCabalSandbox() . '/*-packages.conf.d')
-        let l:absPath = fnamemodify(l:path, ':p')
-        return l:absPath
+        let l:sandbox    = finddir('.cabal-sandbox', './;')
+        let l:pgkConf    = glob(l:sandbox . '/*-packages.conf.d')
+        let l:absPkgConf = fnamemodify(l:pgkConf, ':p')
+        return l:absPkgConf
     endfunction
-    
+
     let g:hdevtools_options = '-g-package-conf=' . FindCabalSandboxPackageConf()
 
 
