@@ -74,7 +74,9 @@ For Vim put the following into your `~/.vimrc`:
     endfunction
     
     function! FindCabalSandboxPackageConf()
-        return glob(FindCabalSandbox() . '/*-packages.conf.d')
+        let l:path    = glob(FindCabalSandbox() . '/*-packages.conf.d')
+        let l:absPath = fnamemodify(l:path, ':p')
+        return l:absPath
     endfunction
     
     let g:hdevtools_options = '-g-package-conf=' . FindCabalSandboxPackageConf()
