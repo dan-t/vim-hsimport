@@ -97,8 +97,8 @@ than your projects cabal file, then you could use:
 
 You also most likely want to add keybindings for the two avialable commands into your `~/.vimrc` e.g.:
 
-    nmap <silent> <F1> :update <bar> HsimportModule<CR>
-    nmap <silent> <F2> :update <bar> HsimportSymbol<CR>
+    nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
+    nmap <silent> <F2> :silent update <bar> HsimportSymbol<CR>
 
 Features
 --------
