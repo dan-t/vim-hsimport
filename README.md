@@ -69,15 +69,31 @@ the sandbox is located.
 
 For Vim put the following into your `~/.vimrc`:
 
-    function! FindCabalSandboxPackageConf()
-        let l:sandbox    = finddir('.cabal-sandbox', './;')
-        let l:pgkConf    = glob(l:sandbox . '/*-packages.conf.d')
-        let l:absPkgConf = fnamemodify(l:pgkConf, ':p')
-        return l:absPkgConf
+    function! FindCabalSandbox()
+       let l:sandbox    = finddir('.cabal-sandbox', './;')
+       let l:absSandbox = fnamemodify(l:sandbox, ':p')
+       return l:absSandbox
     endfunction
 
-    let g:hdevtools_options = '-g-package-conf=' . FindCabalSandboxPackageConf()
+    function! HaskellSourceRoot()
+       return fnamemodify(FindCabalSandbox(), ':h:h')
+    endfunction
 
+    function! FindCabalSandboxPackageConf()
+       return glob(FindCabalSandbox() . '*-packages.conf.d')
+    endfunction
+
+    let g:hdevtools_options = '-g-W -g-i' . HaskellSourceRoot() . ' -g-package-conf=' . FindCabalSandboxPackageConf()
+
+If the root directory of your projects Haskell source code is equal to the position of your
+projects cabal file, then you can just use `HaskellSourceRoot` as it is.
+
+If e.g. your Haskell source code root is the directory `src`, which lies in the same directory
+than your projects cabal file, then you could use:
+
+    function! HaskellSourceRoot()
+       return fnamemodify(FindCabalSandbox(), ':h:h') . '/src'
+    endfunction
 
 You also most likely want to add keybindings for the two avialable commands into your `~/.vimrc` e.g.:
 
