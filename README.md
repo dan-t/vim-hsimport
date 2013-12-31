@@ -1,7 +1,9 @@
 hsimport Vim Plugin
 ===================
 
-The Vim plugin for the command line program [hsimport](<https://github.com/dan-t/hsimport>).
+Automatically create import statements for the symbol/identifier under the cursor.
+
+This is the Vim plugin for the command line program [hsimport](<https://github.com/dan-t/hsimport>).
 
 In conjunction to the [hsimport](<https://github.com/dan-t/hsimport>) command the Vim plugin also
 uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim plugin
@@ -106,6 +108,13 @@ Features
 `HsimportModule` imports the whole module of the symbol/identifier under the cursor.
 
 `HsimportSymbol` imports only the symbol/indentifier under the cursor.
+
+If the symbol/indentifier under the cursor is contained in multiple modules,
+then a selection dialog will be shown.
+
+If the symbol has a module qualifier e.g. `Text.pack`, then both commands will create
+a qualified import for the selected module. If the module `Data.Text` was selected,
+then the created import statement will be `import qualified Data.Text as Text`.
 
 The first call of either command might take several seconds, because `hdevtools` has to
 cache all of the modul informations.
