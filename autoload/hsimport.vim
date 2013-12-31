@@ -1,40 +1,50 @@
 
 function! hsimport#import_module(symbol)
-  let l:module = s:select_module(a:symbol)
+  let l:qualAndSym = s:split_module_qualifier_and_symbol(a:symbol)
+  if len(l:qualAndSym) == 0
+     return
+  endif
+
+  let l:module = s:select_module(l:qualAndSym[1])
   if l:module ==# ''
-    return
+     return
   endif
 
   let l:srcFile = expand('%')
-  call s:hsimport(l:module, '', '', l:srcFile)
+  call s:hsimport(l:module, '', l:qualAndSym[0], l:srcFile)
+
   return
 endfunction
 
 
 function! hsimport#import_symbol(symbol)
-  let l:symbol = hsimport#get_symbol(a:symbol)
-  if l:symbol ==# ''
-    return ''
+  let l:qualAndSym = s:split_module_qualifier_and_symbol(a:symbol)
+  if len(l:qualAndSym) == 0
+     return
   endif
 
-  let l:module = s:select_module(l:symbol)
+  let l:module = s:select_module(l:qualAndSym[1])
   if l:module ==# ''
-    return
+     return
   endif
 
   let l:srcFile = expand('%')
-  call s:hsimport(l:module, l:symbol, '', l:srcFile)
+  if l:qualAndSym[0] !=# ''
+     call s:hsimport(l:module, '', l:qualAndSym[0], l:srcFile)
+  else
+     call s:hsimport(l:module, l:qualAndSym[1], '', l:srcFile)
+  endif
+
   return
 endfunction
 
 
 function! s:select_module(symbol)
-  let l:symbol = s:get_symbol(a:symbol)
-  if l:symbol ==# ''
+  if a:symbol ==# ''
     return ''
   endif
 
-  let l:modules = hdevtools#findsymbol(l:symbol)
+  let l:modules = hdevtools#findsymbol(a:symbol)
   let l:numModules = len(l:modules)
   if l:numModules == 0
     return ''
@@ -47,7 +57,7 @@ function! s:select_module(symbol)
   let l:inputList = ['Select Module to Import:']
   let l:i = 1
   for l:module in l:modules
-    call extend(l:inputList, [printf('%d ', l:i) . l:module])
+    let l:inputList += [printf('%d ', l:i) . l:module]
     let l:i += 1
   endfor
 
@@ -62,6 +72,71 @@ function! s:select_module(symbol)
 
   let l:module = l:modules[l:idx - 1]
   return l:module
+endfunction
+
+
+function! s:split_module_qualifier_and_symbol(symbol)
+   let l:symbol = s:get_symbol(a:symbol)
+   if l:symbol ==# ''
+      return []
+   endif
+
+   let l:words = split(l:symbol, '\.')
+   if len(l:words) <= 1
+      return ['', l:symbol]
+   endif
+
+   let l:moduleWords = []
+   let l:symbolWords = []
+   let l:nonModuleWordFound = 0
+   " consider every word starting with an upper alphabetic 
+   " character to be part of the module qualifier, until a word
+   " starting with a non upper alphabetic character or a non
+   " alphabetic character is found
+   for l:word in l:words
+      if l:nonModuleWordFound == 0 && l:word =~# '\v^\u+\w*$'
+         let l:moduleWords += [l:word]
+      else
+         let l:symbolWords += [l:word]
+         let l:nonModuleWordFound = 1
+      endif
+   endfor
+
+   " If there're no symbol words, than we might have a qualified
+   " data type e.g: 'T.Text', so we're assuming, that the last
+   " module word is specifying the symbol.
+   if len(l:symbolWords) == 0 && len(l:moduleWords) >= 2
+      let l:symbolWords += [l:moduleWords[-1]]
+      let l:moduleWords = l:moduleWords[0 : len(l:moduleWords) - 2]
+   endif
+
+   return [join(l:moduleWords, '.'), join(l:symbolWords, '')]
+endfunction
+
+
+function! hsimport#test_split_module_qualifier_and_symbol()
+   let l:tests = [
+      \ ['data', ['', 'data']],
+      \ ['Data', ['', 'Data']],
+      \ ['T.Text', ['T', 'Text']],
+      \ ['Data.Text', ['Data', 'Text']],
+      \ ['Data.Text.Text', ['Data.Text', 'Text']],
+      \ ['Data.Text.pack', ['Data.Text', 'pack']]
+      \ ]
+
+   for l:test in l:tests
+      let l:result = s:split_module_qualifier_and_symbol(l:test[0])
+      if l:result !=# l:test[1]
+         let l:refStr = '[' . l:test[1][0] . ', ' . l:test[1][1] . ']'
+         let l:resultStr = ''
+         if len(l:result) == 2
+            let l:resultStr = '[' . l:result[0] . ', ' . l:result[1] . ']'
+         endif
+
+         let l:errmsg = 'Test failed for ' . l:test[0] . ': Expected=' . l:refStr . '. Got=' . l:resultStr
+         call s:print_error(l:errmsg)
+      endif
+   endfor
 endfunction
 
 
