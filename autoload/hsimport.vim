@@ -1,12 +1,12 @@
 
 function! hsimport#import_module(symbol)
-  let l:module = hsimport#select_module(a:symbol)
+  let l:module = s:select_module(a:symbol)
   if l:module ==# ''
     return
   endif
 
   let l:srcFile = expand('%')
-  call hsimport#call(l:module, '', l:srcFile)
+  call s:hsimport(l:module, '', '', l:srcFile)
   return
 endfunction
 
@@ -17,19 +17,19 @@ function! hsimport#import_symbol(symbol)
     return ''
   endif
 
-  let l:module = hsimport#select_module(l:symbol)
+  let l:module = s:select_module(l:symbol)
   if l:module ==# ''
     return
   endif
 
   let l:srcFile = expand('%')
-  call hsimport#call(l:module, l:symbol, l:srcFile)
+  call s:hsimport(l:module, l:symbol, '', l:srcFile)
   return
 endfunction
 
 
-function! hsimport#select_module(symbol)
-  let l:symbol = hsimport#get_symbol(a:symbol)
+function! s:select_module(symbol)
+  let l:symbol = s:get_symbol(a:symbol)
   if l:symbol ==# ''
     return ''
   endif
@@ -65,7 +65,7 @@ function! hsimport#select_module(symbol)
 endfunction
 
 
-function! hsimport#get_symbol(symbol)
+function! s:get_symbol(symbol)
   let l:symbol = a:symbol
 
   " No symbol argument given, probably called from a keyboard shortcut
@@ -73,7 +73,7 @@ function! hsimport#get_symbol(symbol)
     " Get the symbol under the cursor
     let l:symbol = hdevtools#extract_identifier(getline("."), col("."))
     if l:symbol ==# ''
-      call hsimport#print_warning('No Symbol Under Cursor')
+      call s:print_warning('No Symbol Under Cursor')
     endif
   endif
 
@@ -81,17 +81,16 @@ function! hsimport#get_symbol(symbol)
 endfunction
 
 
-function! hsimport#call(module, symbol, srcFile)
+function! s:hsimport(module, symbol, qualifiedName, srcFile)
   let l:cursorPos = getpos('.')
   let l:numLinesBefore = line('$')
-  let l:cmd = hsimport#build_command(a:module, a:symbol, a:srcFile)
+  let l:cmd = s:build_command(a:module, a:symbol, a:qualifiedName, a:srcFile)
   let l:output = system(l:cmd)
-  echomsg ''
   let l:lines = split(l:output, '\n')
 
   if v:shell_error != 0
     for l:line in l:lines
-      call hsimport#print_error(l:line)
+      call s:print_error(l:line)
     endfor
   else
     exec 'edit ' . a:srcFile
@@ -105,7 +104,7 @@ function! hsimport#call(module, symbol, srcFile)
 endfunction
 
 
-function! hsimport#build_command(module, symbol, sourceFile)
+function! s:build_command(module, symbol, qualifiedName, sourceFile)
   let l:modParam = '-m ' . shellescape(a:module)
 
   let l:symParam = ''
@@ -113,20 +112,25 @@ function! hsimport#build_command(module, symbol, sourceFile)
     let l:symParam = '-s ' . shellescape(a:symbol) 
   endif
 
+  let l:qualParam = ''
+  if a:qualifiedName !=# ''
+     let l:qualParam = '-q ' . shellescape(a:qualifiedName)
+  endif
+
   let l:srcParam = shellescape(a:sourceFile)
-  let l:cmd = 'hsimport ' . l:modParam . ' ' . l:symParam . ' ' . l:srcParam
+  let l:cmd = 'hsimport ' . l:modParam . ' ' . l:symParam . ' ' . l:qualParam . ' ' . l:srcParam
   return l:cmd
 endfunction
 
 
-function! hsimport#print_error(msg)
+function! s:print_error(msg)
   echohl ErrorMsg
   echomsg a:msg
   echohl None
 endfunction
 
 
-function! hsimport#print_warning(msg)
+function! s:print_warning(msg)
   echohl WarningMsg
   echomsg a:msg
   echohl None
