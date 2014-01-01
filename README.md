@@ -129,6 +129,12 @@ You also most likely want to add keybindings for the two avialable commands into
     nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
     nmap <silent> <F2> :silent update <bar> HsimportSymbol<CR>
 
+Issues
+------
+
+Currently the modules for your own project are only considered if they're listed
+under `exposed-modules` in the `library` section of the `cabal` file of your project.
+
 Credits
 -------
 
