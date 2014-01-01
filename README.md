@@ -1,9 +1,19 @@
 hsimport Vim Plugin
 ===================
 
-Automatically create import statements for the symbol/identifier under the cursor.
+`vim-hsimport` is a Vim plugin that automatically creates import statements for
+Haskell source files for the symbol/identifier under the cursor.
 
-This is the Vim plugin for the command line program [hsimport](<https://github.com/dan-t/hsimport>).
+`vim-hsimport` can create import statements for the whole module, for only
+the desired symbol/indentifier and is also able to create qualified module
+import statements.
+
+By using `hdevtools` in conjunction with a `cabal sandabox`, dynamically only
+the modules of packages are considered, which your project depends on.
+
+If the symbol/identifier is contained in multiple modules, then a selection
+dialog is shown.
+
 
 In conjunction to the [hsimport](<https://github.com/dan-t/hsimport>) command the Vim plugin also
 uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim plugin
@@ -11,6 +21,23 @@ uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim p
 
 Currently you need to use forks of `hdevtools` and `vim-hdevtools` to get a working
 version of `vim-hsimport`, please see the installation section for details.
+
+Features / Vim Commands
+-----------------------
+
+`HsimportModule` imports the whole module of the symbol/identifier under the cursor.
+
+`HsimportSymbol` imports only the symbol/indentifier under the cursor.
+
+If the symbol/indentifier under the cursor is contained in multiple modules,
+then a selection dialog will be shown.
+
+If the symbol has a module qualifier e.g. `Text.pack`, then both commands will create
+a qualified import for the selected module. If the module `Data.Text` was selected,
+then the created import statement will be `import qualified Data.Text as Text`.
+
+The first call of either command might take several seconds, because `hdevtools` has to
+cache all of the modul informations.
 
 Installation
 ------------
@@ -101,23 +128,6 @@ You also most likely want to add keybindings for the two avialable commands into
 
     nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
     nmap <silent> <F2> :silent update <bar> HsimportSymbol<CR>
-
-Features
---------
-
-`HsimportModule` imports the whole module of the symbol/identifier under the cursor.
-
-`HsimportSymbol` imports only the symbol/indentifier under the cursor.
-
-If the symbol/indentifier under the cursor is contained in multiple modules,
-then a selection dialog will be shown.
-
-If the symbol has a module qualifier e.g. `Text.pack`, then both commands will create
-a qualified import for the selected module. If the module `Data.Text` was selected,
-then the created import statement will be `import qualified Data.Text as Text`.
-
-The first call of either command might take several seconds, because `hdevtools` has to
-cache all of the modul informations.
 
 Credits
 -------
