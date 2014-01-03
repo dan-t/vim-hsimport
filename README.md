@@ -59,7 +59,7 @@ Installation
     You now most likely want to create a symbolic link from a directory which is contained
     inside of your $PATH e.g.:
 
-        $ ln -s your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport 
+        $ ln -s $PWD/your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport
 
 3. Install the fork of `hdevtools`, using a `cabal sandbox` is the recommend way:
 
@@ -73,7 +73,7 @@ Installation
     You now most likely want to create a symbolic link from a directory which is contained
     inside of your $PATH e.g.:
 
-        $ ln -s your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
+        $ ln -s $PWD/your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
 
 4. Install `vim-hsimport`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
