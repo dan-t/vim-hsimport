@@ -132,6 +132,12 @@ You also most likely want to add keybindings for the two avialable commands into
 Issues
 ------
 
+You have to call `cabal install` at least once to fill the package database of your `cabal sandbox`,
+because that's the information which is used for finding modules.
+
+If you have added another library as dependency to your project, than you have again to
+call `cabal install` to update the package database accordingly.
+
 Currently the modules for your own project are only considered if they're listed
 under `exposed-modules` in the `library` section of the `cabal` file of your project.
 
