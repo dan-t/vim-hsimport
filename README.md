@@ -11,6 +11,8 @@ import statements.
 By using `hdevtools` in conjunction with a `cabal sandabox`, dynamically only
 the modules of packages are considered, which your project depends on.
 
+`vim-hsimport` does also consider the modules of your current project.
+
 If the symbol/identifier is contained in multiple modules, then a selection
 dialog is shown.
 
@@ -104,7 +106,7 @@ For Vim put the following into your `~/.vimrc`:
        return l:absSandbox
     endfunction
 
-    function! HaskellSourceRoot()
+    function! HaskellSourceDir()
        return fnamemodify(FindCabalSandbox(), ':h:h')
     endfunction
 
@@ -112,15 +114,16 @@ For Vim put the following into your `~/.vimrc`:
        return glob(FindCabalSandbox() . '*-packages.conf.d')
     endfunction
 
-    let g:hdevtools_options = '-g-W -g-i' . HaskellSourceRoot() . ' -g-package-conf=' . FindCabalSandboxPackageConf()
+    let g:hdevtools_options = '-g-package-conf=' . FindCabalSandboxPackageConf()
+    let g:hdevtools_src_dir = HaskellSourceDir()
 
 If the root directory of your projects Haskell source code is equal to the position of your
-projects cabal file, then you can just use `HaskellSourceRoot` as it is.
+projects cabal file, then you can just use `HaskellSourceDir` as it is.
 
 If e.g. your Haskell source code root is the directory `src`, which lies in the same directory
 than your projects cabal file, then you could use:
 
-    function! HaskellSourceRoot()
+    function! HaskellSourceDir()
        return fnamemodify(FindCabalSandbox(), ':h:h') . '/src'
     endfunction
 
@@ -135,11 +138,27 @@ Issues
 You have to call `cabal install` at least once to fill the package database of your `cabal sandbox`,
 because that's the information which is used for finding modules.
 
-If you have added another library as dependency to your project, than you have again to
+If you have added another library as dependency to your project, then you have again to
 call `cabal install` to update the package database accordingly.
 
-Currently the modules for your own project are only considered if they're listed
-under `exposed-modules` in the `library` section of the `cabal` file of your project.
+Currently the modules for your own project are considered by a quite simple heuristic.
+A project might have a lot of files, so `hdevtools` just can't be called with every
+source file of your project, because loading each file with GHC might take some time.
+
+So currently the source tree starting at `g:hdevtools_src_dir` is searched by `grep` with
+a regex that should "mostly" match the export list of the source files. 
+
+So only source files which explicitly export the symbol are considered for further inspection
+and the export list has mostly to look like:
+
+    module Blub
+       ( symbol1
+       , symbol2
+       ) where
+
+I'm very open for changing this to something more robust. The solution can return false
+positives, because the real inspection is done by `hdevtools`, it's just about to reduce
+the number of source files given to `hdevtools` and that it's still interactive usable.
 
 Credits
 -------
