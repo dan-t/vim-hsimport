@@ -8,7 +8,7 @@ Haskell source files for the symbol/identifier under the cursor.
 the desired symbol/indentifier and is also able to create qualified module
 import statements.
 
-By using `hdevtools` in conjunction with a `cabal sandabox`, dynamically only
+By using `hdevtools` in conjunction with a `cabal sandbox`, dynamically only
 the modules of packages are considered, which your project depends on.
 
 `vim-hsimport` does also consider the modules of your current project.
