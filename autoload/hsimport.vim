@@ -136,7 +136,7 @@ function! hsimport#test_split_module_qualifier_and_symbol()
          endif
 
          let l:errmsg = 'Test failed for ' . l:test[0] . ': Expected=' . l:refStr . '. Got=' . l:resultStr
-         call s:print_error(l:errmsg)
+         call hsimport#print_error(l:errmsg)
       endif
    endfor
 endfunction
@@ -150,7 +150,7 @@ function! s:get_symbol(symbol)
     " Get the symbol under the cursor
     let l:symbol = hdevtools#extract_identifier(getline("."), col("."))
     if l:symbol ==# ''
-      call s:print_warning('No Symbol Under Cursor')
+      call hsimport#print_warning('No Symbol Under Cursor')
     endif
   endif
 
@@ -167,7 +167,7 @@ function! s:hsimport(module, symbol, qualifiedName, srcFile)
 
   if v:shell_error != 0
     for l:line in l:lines
-      call s:print_error(l:line)
+      call hsimport#print_error(l:line)
     endfor
   else
     exec 'edit ' . a:srcFile
@@ -200,14 +200,14 @@ function! s:build_command(module, symbol, qualifiedName, sourceFile)
 endfunction
 
 
-function! s:print_error(msg)
+function! hsimport#print_error(msg)
   echohl ErrorMsg
   echomsg a:msg
   echohl None
 endfunction
 
 
-function! s:print_warning(msg)
+function! hsimport#print_warning(msg)
   echohl WarningMsg
   echomsg a:msg
   echohl None
