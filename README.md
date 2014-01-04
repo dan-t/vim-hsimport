@@ -24,6 +24,9 @@ uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim p
 Currently you need to use forks of `hdevtools` and `vim-hdevtools` to get a working
 version of `vim-hsimport`, please see the installation section for details.
 
+Currently the biggest issue is if and how modules of your current project are
+considered for the import, please see the issues section.
+
 Features / Vim Commands
 -----------------------
 
