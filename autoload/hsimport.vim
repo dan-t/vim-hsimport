@@ -121,7 +121,9 @@ function! hsimport#test_split_module_qualifier_and_symbol()
       \ ['T.Text', ['T', 'Text']],
       \ ['Data.Text', ['Data', 'Text']],
       \ ['Data.Text.Text', ['Data.Text', 'Text']],
-      \ ['Data.Text.pack', ['Data.Text', 'pack']]
+      \ ['Data.Text.pack', ['Data.Text', 'pack']],
+      \ ['.&.', ['', '.&.']],
+      \ ['.|.', ['', '.|.']]
       \ ]
 
    for l:test in l:tests
