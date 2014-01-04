@@ -161,7 +161,8 @@ and the export list has mostly to look like:
 
 I'm very open for changing this to something more robust. The solution can return false
 positives, because the real inspection is done by `hdevtools`, it's just about to reduce
-the number of source files given to `hdevtools` and that it's still interactive usable.
+the number of source files given to `hdevtools` and that it's still fast enough to be
+interactive usable.
 
 Credits
 -------
