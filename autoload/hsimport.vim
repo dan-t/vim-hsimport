@@ -44,7 +44,8 @@ function! s:select_module(symbol)
     return ''
   endif
 
-  let l:modules = hdevtools#findsymbol(a:symbol)
+  let l:srcFiles = s:source_files_containing(a:symbol)
+  let l:modules = hdevtools#findsymbol(a:symbol, l:srcFiles)
   let l:numModules = len(l:modules)
   if l:numModules == 0
     return ''
@@ -72,6 +73,50 @@ function! s:select_module(symbol)
 
   let l:module = l:modules[l:idx - 1]
   return l:module
+endfunction
+
+
+function! s:source_files_containing(symbol)
+   let l:srcFiles = []
+   if exists('g:hdevtools_src_dir')
+      " only consider the source files that contain the identifier in the export list, currently
+      " only export lists are supported that look something like:
+      "
+      " module Blub
+      "    ( identifier1
+      "    , identifier2
+      "    ) where
+      "
+      let l:regex  = "'^ *[(,].*" . shellescape(a:symbol) . ".*$'"
+      let l:grpcmd = 'grep --exclude=.hdevtools.sock -Rl -e ' . l:regex . ' ' . g:hdevtools_src_dir
+      if g:hsimport_debug == 1
+         echo 'grpcmd: ' . l:grpcmd
+      endif
+
+      let l:grepOutput = system(l:grpcmd)
+      if g:hsimport_debug == 1
+         echo 'grepOutput:'
+         echo l:grepOutput
+      endif
+
+      let l:files = split(l:grepOutput, '\n')
+
+      " convert files to absolute paths and remove the current file if it's contained in the list
+      let l:curFile = fnamemodify(expand('%'), ':p')
+      for l:file in l:files
+         let l:absFile = fnamemodify(l:file, ':p')
+         if l:absFile !=# l:curFile
+            let l:srcFiles += [l:absFile]
+         endif
+      endfor
+   endif
+
+   if g:hsimport_debug == 1
+      echo 'srcFiles:'
+      echo l:srcFiles
+   endif
+
+   return l:srcFiles
 endfunction
 
 
