@@ -135,6 +135,11 @@ You also most likely want to add keybindings for the two avialable commands into
     nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
     nmap <silent> <F2> :silent update <bar> HsimportSymbol<CR>
 
+If you're developing with the GHC-API (the ghc library), then you also want to add `-g-package=ghc`
+to `g:hdevtools_options`. Normally only exposed/non-hidden packages are considered, but even
+if your project depends on `ghc`, then the `ghc` package is still marked as hidden. I don't know
+why that's the case.
+
 Issues
 ------
 
