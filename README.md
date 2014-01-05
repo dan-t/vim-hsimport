@@ -154,15 +154,18 @@ A project might have a lot of files, so `hdevtools` just can't be called with ev
 source file of your project, because loading each file with GHC might take some time.
 
 So currently the source tree starting at `g:hdevtools_src_dir` is searched by `grep` with
-a regex that should "mostly" match the export list of the source files. 
+a regex that should "mostly" match the symbol with the export list (in a quite fixed form, see below)
+and with top level function/operator definitions.
 
-So only source files which explicitly export the symbol are considered for further inspection
-and the export list has mostly to look like:
+So only source files are considered for further inspection that have the symbol at:
 
     module Blub
-       ( symbol1
-       , symbol2
+       ( symbol
+       , symbol
        ) where
+
+    symbol :: ...
+    (symbol) :: ...
 
 I'm very open for changing this to something more robust. The solution can return false
 positives, because the real inspection is done by `hdevtools`, it's just about to reduce
