@@ -79,21 +79,28 @@ endfunction
 function! s:source_files_containing(symbol)
    let l:srcFiles = []
    if exists('g:hdevtools_src_dir')
-      " only consider the source files that contain the identifier in the export list, currently
-      " only export lists are supported that look something like:
+      " Currently only source files are considered that contain the symbol in
+      " the export list or are having a top level function/operator defintion
+      " for the symbol.
+      "
+      " The export list has mostly to look something like:
       "
       " module Blub
-      "    ( identifier1
-      "    , identifier2
+      "    ( symbol
+      "    , symbol
       "    ) where
       "
-      let l:regex  = "'^ *[(,].*" . shellescape(a:symbol) . ".*$'"
-      let l:grpcmd = 'grep --exclude=.hdevtools.sock -Rl -e ' . l:regex . ' ' . g:hdevtools_src_dir
+      let l:escapedSymbol     = shellescape(a:symbol)
+      let l:exportRegex       = '^ *[(,].*' . l:escapedSymbol . '.*$'
+      let l:topLevelFuncRegex = '^' . l:escapedSymbol . ' *::.*$'
+      let l:topLevelOpRegex   = '^\(' . l:escapedSymbol . '\) *::.*$'
+      let l:grepRegex         = "'" . l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex . "'"
+      let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . g:hdevtools_src_dir
       if g:hsimport_debug == 1
-         echo 'grpcmd: ' . l:grpcmd
+         echo 'grpCmd: ' . l:grpCmd
       endif
 
-      let l:grepOutput = system(l:grpcmd)
+      let l:grepOutput = system(l:grpCmd)
       if g:hsimport_debug == 1
          echo 'grepOutput:'
          echo l:grepOutput
