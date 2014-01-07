@@ -103,22 +103,31 @@ the sandbox is located.
 
 For Vim put the following into your `~/.vimrc`:
 
-    function! FindCabalSandbox()
+    function! s:FindCabalSandbox()
        let l:sandbox    = finddir('.cabal-sandbox', './;')
        let l:absSandbox = fnamemodify(l:sandbox, ':p')
        return l:absSandbox
     endfunction
-
-    function! HaskellSourceDir()
-       return fnamemodify(FindCabalSandbox(), ':h:h')
+    
+    function! s:FindCabalSandboxPackageConf()
+       return glob(s:FindCabalSandbox() . '*-packages.conf.d')
     endfunction
-
-    function! FindCabalSandboxPackageConf()
-       return glob(FindCabalSandbox() . '*-packages.conf.d')
+    
+    function! s:HaskellSourceDir()
+       return fnamemodify(s:FindCabalSandbox(), ':h:h') . '/src'
     endfunction
-
-    let g:hdevtools_options = '-g-package-conf=' . FindCabalSandboxPackageConf()
-    let g:hdevtools_src_dir = HaskellSourceDir()
+    
+    function! s:HdevtoolsSocketFile()
+       return s:HaskellSourceDir() . '/.hdevtools.sock'
+    endfunction
+    
+    autocmd Bufenter *.hs :call s:InitHdevtoolsVars()
+    
+    function! s:InitHdevtoolsVars()
+       let b:hdevtools_options  = '-g-package-conf=' . s:FindCabalSandboxPackageConf()
+       let b:hdevtools_options .= ' ' . '--socket=' . s:HdevtoolsSocketFile()
+       let b:hdevtools_src_dir  = s:HaskellSourceDir()
+    endfunction
 
 If the root directory of your projects Haskell source code is equal to the position of your
 projects cabal file, then you can just use `HaskellSourceDir` as it is.
