@@ -78,7 +78,8 @@ endfunction
 
 function! s:source_files_containing(symbol)
    let l:srcFiles = []
-   if exists('g:hdevtools_src_dir')
+   let l:srcDir = hdevtools#src_dir()
+   if l:srcDir !=# ''
       " Currently only source files are considered that contain the symbol in
       " the export list or are having a top level function/operator defintion
       " for the symbol.
@@ -95,7 +96,7 @@ function! s:source_files_containing(symbol)
       let l:topLevelFuncRegex = '^' . l:escapedSymbol . ' *::.*$'
       let l:topLevelOpRegex   = '^\(' . l:escapedSymbol . '\) *::.*$'
       let l:grepRegex         = "'" . l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex . "'"
-      let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . g:hdevtools_src_dir
+      let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . l:srcDir
       if g:hsimport_debug == 1
          echo 'grpCmd: ' . l:grpCmd
       endif
