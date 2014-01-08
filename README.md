@@ -129,15 +129,9 @@ For Vim put the following into your `~/.vimrc`:
        let b:hdevtools_src_dir  = s:HaskellSourceDir()
     endfunction
 
-If the root directory of your projects Haskell source code is equal to the position of your
-projects cabal file, then you can just use `HaskellSourceDir` as it is.
-
-If e.g. your Haskell source code root is the directory `src`, which lies in the same directory
-than your projects cabal file, then you could use:
-
-    function! HaskellSourceDir()
-       return fnamemodify(FindCabalSandbox(), ':h:h') . '/src'
-    endfunction
+If the root directory of your projects Haskell source code is named `src` and lies in the
+same directory than your projects cabal file, then you can just use `HaskellSourceDir` as it
+is, otherwise you have to change it.
 
 You also most likely want to add keybindings for the two avialable commands into your `~/.vimrc` e.g.:
 
