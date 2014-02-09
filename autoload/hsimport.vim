@@ -95,7 +95,7 @@ function! s:source_files_containing(symbol)
       let l:exportRegex       = '^ *[(,].*' . l:escapedSymbol . '.*$'
       let l:topLevelFuncRegex = '^' . l:escapedSymbol . ' *::.*$'
       let l:topLevelOpRegex   = '^\(' . l:escapedSymbol . '\) *::.*$'
-      let l:grepRegex         = "'" . l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex . "'"
+      let l:grepRegex         = shellescape(l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
       let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . l:srcDir
       if g:hsimport_debug == 1
          echo 'grpCmd: ' . l:grpCmd
