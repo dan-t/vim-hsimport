@@ -121,12 +121,14 @@ For Vim put the following into your `~/.vimrc`:
        return s:HaskellSourceDir() . '/.hdevtools.sock'
     endfunction
     
-    autocmd Bufenter *.hs :call s:InitHdevtoolsVars()
+    autocmd Bufenter *.hs :call s:InitHaskellVars()
     
-    function! s:InitHdevtoolsVars()
-       let b:hdevtools_options  = '-g-package-conf=' . s:FindCabalSandboxPackageConf()
-       let b:hdevtools_options .= ' ' . '--socket=' . s:HdevtoolsSocketFile()
-       let b:hdevtools_src_dir  = s:HaskellSourceDir()
+    function! s:InitHaskellVars()
+       let g:hdevtools_options  = '-g-W -g-package=ghc'
+       let g:hdevtools_options .= ' ' . '-g-package-conf=' . s:FindCabalSandboxPackageConf()
+       let g:hdevtools_options .= ' ' . '-g-i' . s:HaskellSourceDir()
+       let g:hdevtools_options .= ' ' . '--socket=' . s:HdevtoolsSocketFile()
+       let g:hsimport_src_dir   = s:HaskellSourceDir()
     endfunction
 
 If the root directory of your projects Haskell source code is named `src` and lies in the
