@@ -18,10 +18,6 @@ if !s:has_hsimport
   finish
 endif
 
-if !exists('g:hsimport_debug')
-   let g:hsimport_debug = 0
-endif
-
 if exists('b:undo_ftplugin')
   let b:undo_ftplugin .= ' | '
 else

@@ -39,6 +39,16 @@ function! hsimport#import_symbol(symbol)
 endfunction
 
 
+function! hsimport#debug()
+   return get(g:, 'hsimport_debug', 0)
+endfunction
+
+
+function! hsimport#src_dir()
+   return get(g:, 'hsimport_src_dir', '')
+endfunction
+
+
 function! s:select_module(symbol)
   if a:symbol ==# ''
     return ''
@@ -78,7 +88,7 @@ endfunction
 
 function! s:source_files_containing(symbol)
    let l:srcFiles = []
-   let l:srcDir = hdevtools#src_dir()
+   let l:srcDir = hsimport#src_dir()
    if l:srcDir !=# ''
       " Currently only source files are considered that contain the symbol in
       " the export list or are having a top level function/operator defintion
@@ -97,12 +107,12 @@ function! s:source_files_containing(symbol)
       let l:topLevelOpRegex   = '^\(' . l:escapedSymbol . '\) *::.*$'
       let l:grepRegex         = shellescape(l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
       let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . l:srcDir
-      if g:hsimport_debug == 1
+      if hsimport#debug() == 1
          echo 'grpCmd: ' . l:grpCmd
       endif
 
       let l:grepOutput = system(l:grpCmd)
-      if g:hsimport_debug == 1
+      if hsimport#debug() == 1
          echo 'grepOutput:'
          echo l:grepOutput
       endif
@@ -119,7 +129,7 @@ function! s:source_files_containing(symbol)
       endfor
    endif
 
-   if g:hsimport_debug == 1
+   if hsimport#debug() == 1
       echo 'srcFiles:'
       echo l:srcFiles
    endif
