@@ -124,7 +124,7 @@ For Vim put the following into your `~/.vimrc`:
     autocmd Bufenter *.hs :call s:InitHaskellVars()
     
     function! s:InitHaskellVars()
-       let g:hdevtools_options  = '-g-W -g-package=ghc'
+       let g:hdevtools_options  = '-g-W'
        let g:hdevtools_options .= ' ' . '-g-package-conf=' . s:FindCabalSandboxPackageConf()
        let g:hdevtools_options .= ' ' . '-g-i' . s:HaskellSourceDir()
        let g:hdevtools_options .= ' ' . '--socket=' . s:HdevtoolsSocketFile()
