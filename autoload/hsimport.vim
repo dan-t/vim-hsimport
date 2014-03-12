@@ -101,10 +101,9 @@ function! s:source_files_containing(symbol)
       "    , symbol
       "    ) where
       "
-      let l:escapedSymbol     = shellescape(a:symbol)
-      let l:exportRegex       = '^ *[(,].*' . l:escapedSymbol . '.*$'
-      let l:topLevelFuncRegex = '^' . l:escapedSymbol . ' *::.*$'
-      let l:topLevelOpRegex   = '^\(' . l:escapedSymbol . '\) *::.*$'
+      let l:exportRegex       = '^ *[(,].*' . a:symbol . '.*$'
+      let l:topLevelFuncRegex = '^' . a:symbol . ' *::.*$'
+      let l:topLevelOpRegex   = '^\(' . a:symbol . '\) *::.*$'
       let l:grepRegex         = shellescape(l:exportRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
       let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . l:srcDir
       if hsimport#debug() == 1
