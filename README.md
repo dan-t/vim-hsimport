@@ -135,6 +135,47 @@ If the root directory of your projects Haskell source code is named `src` and li
 same directory than your projects cabal file, then you can just use `HaskellSourceDir` as it
 is, otherwise you have to change it.
 
+Instead of the manual configuration above I highly recommend the use of [cabal-cargs](<https://github.com/dan-t/cabal-cargs>)
+for the configuration of `hdevtools` and `hsimport`, because it will automatically find
+the corresponding cabal file, the cabal sandbox and consider all settings in the cabal file:
+
+    function! s:CabalCargs(args)
+       let l:output = system('cabal-cargs ' . a:args)
+       if v:shell_error != 0
+          let l:lines = split(l:output, '\n')
+          echohl ErrorMsg
+          echomsg 'args: ' . a:args
+          for l:line in l:lines
+             echomsg l:line
+          endfor
+          echohl None
+          return ''
+       endif
+       return l:output
+    endfunction
+    
+    function! s:HdevtoolsOptions()
+        return s:CabalCargs('--format=hdevtools --sourcefile=' . shellescape(expand('%')))
+    endfunction
+    
+    function! s:HsimportSrcDir()
+       let l:output  = s:CabalCargs('--format=pure --only=hs_source_dirs --sourcefile=' . shellescape(expand('%')))
+       let l:srcDirs = split(l:output, ' ')
+       if len(l:srcDirs) == 0
+          return ''
+       endif
+       return l:srcDirs[0]
+    endfunction
+    
+    autocmd Bufenter *.hs :call s:InitHaskellVars()
+    
+    function! s:InitHaskellVars()
+       if filereadable(expand('%'))
+          let g:hdevtools_options = s:HdevtoolsOptions()
+          let g:hsimport_src_dir  = s:HsimportSrcDir()
+       endif
+    endfunction
+
 You also most likely want to add keybindings for the two avialable commands into your `~/.vimrc` e.g.:
 
     nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
