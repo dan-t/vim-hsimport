@@ -62,7 +62,7 @@ Installation
     Your `hsimport` binary is now at `your_hsimport_build_dir/.cabal-sandbox/bin/hsimport`.
 
     You now most likely want to create a symbolic link from a directory which is contained
-    inside of your $PATH e.g.:
+    inside of your `$PATH` e.g.:
 
         $ ln -s $PWD/your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport
 
@@ -76,7 +76,7 @@ Installation
     Your `hdevtools` binary is now at `your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools`.
     
     You now most likely want to create a symbolic link from a directory which is contained
-    inside of your $PATH e.g.:
+    inside of your `$PATH` e.g.:
 
         $ ln -s $PWD/your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
 
