@@ -11,7 +11,7 @@ function! hsimport#import_module(symbol)
   endif
 
   let l:srcFile = expand('%')
-  call s:hsimport(l:module, '', l:qualAndSym[0], l:srcFile)
+  call s:hsimport(l:module, '', 0, l:qualAndSym[0], l:srcFile)
 
   return
 endfunction
@@ -30,9 +30,17 @@ function! hsimport#import_symbol(symbol)
 
   let l:srcFile = expand('%')
   if l:qualAndSym[0] !=# ''
-     call s:hsimport(l:module, '', l:qualAndSym[0], l:srcFile)
+     call s:hsimport(l:module, '', 0, l:qualAndSym[0], l:srcFile)
   else
-     call s:hsimport(l:module, l:qualAndSym[1], '', l:srcFile)
+     let l:symbol = l:qualAndSym[1]
+     let l:allOfSym = 0
+     " Check if the symbol starts with an upper case letter, if
+     " yes, then ask if all contructors or methods of the type/class
+     " should be imported
+     if l:symbol =~# '\v^\u+\w*$'
+        let l:allOfSym = s:import_all_of_symbol(l:symbol)
+     endif
+     call s:hsimport(l:module, l:symbol, l:allOfSym, '', l:srcFile)
   endif
 
   return
@@ -46,6 +54,24 @@ endfunction
 
 function! hsimport#src_dir()
    return get(g:, 'hsimport_src_dir', '')
+endfunction
+
+
+function! s:import_all_of_symbol(symbol)
+  if a:symbol ==# ''
+    return 0
+  endif
+
+  let l:inputList  = ['']
+  let l:inputList += ['1 Import only Type/Class  : ' . a:symbol]
+  let l:inputList += ['2 Import all of Type/Class: ' . a:symbol . '(..)']
+
+  let l:idx = inputlist(l:inputList)
+  if l:idx == 0 || l:idx == 1
+     return 0
+  endif
+
+  return 1
 endfunction
 
 
@@ -220,10 +246,10 @@ function! s:get_symbol(symbol)
 endfunction
 
 
-function! s:hsimport(module, symbol, qualifiedName, srcFile)
+function! s:hsimport(module, symbol, allOfSym, qualifiedName, srcFile)
   let l:cursorPos = getpos('.')
   let l:numLinesBefore = line('$')
-  let l:cmd = s:build_command(a:module, a:symbol, a:qualifiedName, a:srcFile)
+  let l:cmd = s:build_command(a:module, a:symbol, a:allOfSym, a:qualifiedName, a:srcFile)
   let l:output = system(l:cmd)
   let l:lines = split(l:output, '\n')
 
@@ -243,12 +269,17 @@ function! s:hsimport(module, symbol, qualifiedName, srcFile)
 endfunction
 
 
-function! s:build_command(module, symbol, qualifiedName, sourceFile)
+function! s:build_command(module, symbol, allOfSym, qualifiedName, sourceFile)
   let l:modParam = '-m ' . shellescape(a:module)
 
   let l:symParam = ''
   if a:symbol !=# ''
     let l:symParam = '-s ' . shellescape(a:symbol) 
+  endif
+
+  let l:allOfSymParam = ''
+  if a:allOfSym == 1
+    let l:allOfSymParam = '-a'
   endif
 
   let l:qualParam = ''
@@ -257,7 +288,7 @@ function! s:build_command(module, symbol, qualifiedName, sourceFile)
   endif
 
   let l:srcParam = shellescape(a:sourceFile)
-  let l:cmd = 'hsimport ' . l:modParam . ' ' . l:symParam . ' ' . l:qualParam . ' ' . l:srcParam
+  let l:cmd = 'hsimport ' . l:modParam . ' ' . l:symParam . ' ' . l:allOfSymParam . ' ' . l:qualParam . ' ' . l:srcParam
   return l:cmd
 endfunction
 
