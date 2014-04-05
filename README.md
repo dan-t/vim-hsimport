@@ -16,10 +16,12 @@ the modules of packages are considered, which your project depends on.
 If the symbol/identifier is contained in multiple modules, then a selection
 dialog is shown.
 
-
 In conjunction to the [hsimport](<https://github.com/dan-t/hsimport>) command the Vim plugin also
 uses the command [hdevtools](<https://github.com/bitc/hdevtools/>) and the Vim plugin
 [vim-hdevtools](<https://github.com/bitc/vim-hdevtools/>).
+
+I highly recommend the usage of [cabal-cargs](<https://github.com/dan-t/cabal-cargs>) for
+the configuration of `hdevtools` and `vim-hsimport`, see the configuration section for further details.
 
 Currently you need to use forks of `hdevtools` and `vim-hdevtools` to get a working
 version of `vim-hsimport`, please see the installation section for details.
@@ -61,8 +63,7 @@ Installation
    
     Your `hsimport` binary is now at `your_hsimport_build_dir/.cabal-sandbox/bin/hsimport`.
 
-    You now most likely want to create a symbolic link from a directory which is contained
-    inside of your `$PATH` e.g.:
+    You now most likely want to create a symbolic link from a directory which is contained in your `$PATH` e.g.:
 
         $ ln -s $PWD/your_hsimport_build_dir/.cabal-sandbox/bin/hsimport ~/bin/hsimport
 
@@ -75,18 +76,30 @@ Installation
 
     Your `hdevtools` binary is now at `your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools`.
     
-    You now most likely want to create a symbolic link from a directory which is contained
-    inside of your `$PATH` e.g.:
+    You now most likely want to create a symbolic link from a directory which is contained in your `$PATH` e.g.:
 
         $ ln -s $PWD/your_hdevtools_build_dir/.cabal-sandbox/bin/hdevtools ~/bin/hdevtools
 
-4. Install `vim-hsimport`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
+4. Install `cabal-cargs (>= 0.4)`, using a `cabal sandbox` is the recommend way:
+
+        $ mkdir your_cabal-cargs_build_dir
+        $ cd your_cabal-cargs_build_dir
+        $ cabal sandbox init
+        $ cabal install cabal-cargs
+   
+    Your `cabal-cargs` binary is now at `your_cabal-cargs_build_dir/.cabal-sandbox/bin/cabal-cargs`.
+
+    You now most likely want to create a symbolic link from a directory which is contained in your `$PATH` e.g.:
+
+        $ ln -s $PWD/your_cabal-cargs_build_dir/.cabal-sandbox/bin/cabal-cargs ~/bin/cabal-cargs
+
+5. Install `vim-hsimport`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
         $ cd ~/.vim/bundle
         $ git clone https://github.com/dan-t/vim-hsimport
 
-5. Install the fork of `vim-hdevtools`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
+6. Install the fork of `vim-hdevtools`. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
         $ cd ~/.vim/bundle
@@ -101,43 +114,10 @@ source file only by modules of libraries, which your project depends on.
 This can be achieved by building your project in a `cabal sandbox` and telling `hdevtools` where
 the sandbox is located.
 
+The easiest way to configure `hdevtools` to be aware of the `cabal sandbox` and all other settings
+inside of the cabal file, is by using `cabal-cargs`.
+
 For Vim put the following into your `~/.vimrc`:
-
-    function! s:FindCabalSandbox()
-       let l:sandbox    = finddir('.cabal-sandbox', './;')
-       let l:absSandbox = fnamemodify(l:sandbox, ':p')
-       return l:absSandbox
-    endfunction
-    
-    function! s:FindCabalSandboxPackageConf()
-       return glob(s:FindCabalSandbox() . '*-packages.conf.d')
-    endfunction
-    
-    function! s:HaskellSourceDir()
-       return fnamemodify(s:FindCabalSandbox(), ':h:h') . '/src'
-    endfunction
-    
-    function! s:HdevtoolsSocketFile()
-       return s:HaskellSourceDir() . '/.hdevtools.sock'
-    endfunction
-    
-    autocmd Bufenter *.hs :call s:InitHaskellVars()
-    
-    function! s:InitHaskellVars()
-       let g:hdevtools_options  = '-g-W'
-       let g:hdevtools_options .= ' ' . '-g-package-conf=' . s:FindCabalSandboxPackageConf()
-       let g:hdevtools_options .= ' ' . '-g-i' . s:HaskellSourceDir()
-       let g:hdevtools_options .= ' ' . '--socket=' . s:HdevtoolsSocketFile()
-       let g:hsimport_src_dir   = s:HaskellSourceDir()
-    endfunction
-
-If the root directory of your projects Haskell source code is named `src` and lies in the
-same directory than your projects cabal file, then you can just use `HaskellSourceDir` as it
-is, otherwise you have to change it.
-
-Instead of the manual configuration above I highly recommend the use of [cabal-cargs](<https://github.com/dan-t/cabal-cargs>)
-for the configuration of `hdevtools` and `hsimport`, because it will automatically find
-the corresponding cabal file, the cabal sandbox and consider all settings in the cabal file:
 
     function! s:CabalCargs(args)
        let l:output = system('cabal-cargs ' . a:args)
@@ -155,7 +135,10 @@ the corresponding cabal file, the cabal sandbox and consider all settings in the
     endfunction
     
     function! s:HdevtoolsOptions()
-        return s:CabalCargs('--format=hdevtools --sourcefile=' . shellescape(expand('%')))
+        let l:params = '--format=hdevtools --sourcefile=' . shellescape(expand('%'))
+        let l:cargs  = s:CabalCargs(l:params . ' ' . '--ignore=build_depends')
+        let l:deps   = s:CabalCargs(l:params . ' ' . '--allsections --only=build_depends')
+        return l:cargs . ' ' . '-g-hide-all-packages' . ' ' . l:deps
     endfunction
     
     function! s:HsimportSrcDir()
