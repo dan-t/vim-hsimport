@@ -169,6 +169,9 @@ to `g:hdevtools_options`. Normally only exposed/non-hidden packages are consider
 if your project depends on `ghc`, then the `ghc` package is still marked as hidden. I don't know
 why that's the case.
 
+How the imports are pretty printed and where they're placed can be configured. Please take a look
+at the [README](<https://github.com/dan-t/hsimport/blob/master/README.md>) of `hsimport`.
+
 Issues
 ------
 
