@@ -78,7 +78,7 @@ function! s:select_module(symbol)
   endif
 
   let l:srcFiles = s:source_files_containing(a:symbol)
-  let l:modules = s:hdevtools_findsymbol(a:symbol, l:srcFiles)
+  let l:modules = filter(s:hdevtools_findsymbol(a:symbol, l:srcFiles), 'v:val != "Prelude"')
   let l:numModules = len(l:modules)
   if l:numModules == 0
     return ''
