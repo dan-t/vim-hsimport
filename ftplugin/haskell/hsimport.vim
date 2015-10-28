@@ -5,16 +5,32 @@ let b:did_ftplugin_hsimport = 1
 
 if !exists('s:has_hsimport')
   let s:has_hsimport = 0
-
   if !executable('hsimport')
     call hsimport#print_error('hsimport is not executable!')
     finish
   endif
-
   let s:has_hsimport = 1
 endif
 
-if !s:has_hsimport
+if !exists('s:has_hdevtools')
+  let s:has_hdevtools = 0
+  if !executable('hdevtools')
+    call hdevtools#print_error('hdevtools is not executable!')
+    finish
+  endif
+  let s:has_hdevtools = 1
+endif
+
+if !exists('s:has_grep')
+  let s:has_grep = 0
+  if !executable('grep')
+    call grep#print_error('grep is not executable!')
+    finish
+  endif
+  let s:has_grep = 1
+endif
+
+if !s:has_hsimport || !s:has_hdevtools || !s:has_grep
   finish
 endif
 

@@ -206,7 +206,7 @@ function! hsimport#test_split_module_qualifier_and_symbol()
          endif
 
          let l:errmsg = 'Test failed for ' . l:test[0] . ': Expected=' . l:refStr . '. Got=' . l:resultStr
-         call s:print_error(l:errmsg)
+         call hsimport#print_error(l:errmsg)
       endif
    endfor
 endfunction
@@ -220,7 +220,7 @@ function! s:get_symbol(symbol)
     " Get the symbol under the cursor
     let l:symbol = s:extract_identifier(getline("."), col("."))
     if l:symbol ==# ''
-      call s:print_warning('No Symbol Under Cursor')
+      call hsimport#print_warning('No Symbol Under Cursor')
     endif
   endif
 
@@ -237,7 +237,7 @@ function! s:hsimport(module, symbol, allOfSym, qualifiedName, srcFile)
 
   if v:shell_error != 0
     for l:line in l:lines
-      call s:print_error(l:line)
+      call hsimport#print_error(l:line)
     endfor
   else
     exec 'edit ' . a:srcFile
@@ -398,7 +398,7 @@ function! hsimport#test_extract_identifier()
     for l:i in range(l:start_index, l:end_index)
       let l:result = s:extract_identifier(l:input, l:i)
       if l:expected !=# l:result
-        call s:print_error("TEST FAILED expected: (" . l:expected . ") got: (" . l:result . ") for column " . l:i . " of: " . l:input)
+        call hsimport#print_error("TEST FAILED expected: (" . l:expected . ") got: (" . l:result . ") for column " . l:i . " of: " . l:input)
       endif
     endfor
   endfor
@@ -410,7 +410,7 @@ function! s:hdevtools_findsymbol(identifier, srcFiles)
 
   " No identifier argument given, probably called from a keyboard shortcut
   if l:identifier ==# ''
-    s:print_error('No identifier given!')
+    hsimport#print_error('No identifier given!')
     return []
   endif
 
@@ -426,7 +426,7 @@ function! s:hdevtools_findsymbol(identifier, srcFiles)
   " Check if the call to hdevtools info succeeded
   if v:shell_error != 0
     for l:line in l:lines
-      call s:print_error(l:line)
+      call hsimport#print_error(l:line)
     endfor
   else
     return l:lines
@@ -460,14 +460,14 @@ function! s:src_root()
 endfunction
 
 
-function! s:print_error(msg)
+function! hsimport#print_error(msg)
   echohl ErrorMsg
   echomsg a:msg
   echohl None
 endfunction
 
 
-function! s:print_warning(msg)
+function! hsimport#print_warning(msg)
   echohl WarningMsg
   echomsg a:msg
   echohl None
