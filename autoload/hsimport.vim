@@ -437,26 +437,25 @@ endfunction
 
 
 function! s:src_root()
-  let l:old_cwd = getcwd()
-  let l:cabal_dir = ''
+  let l:dir = fnamemodify(expand('%'), ':h')
   while 1
-    let l:cwd = getcwd()
-    call s:debug('cwd: ' . l:cwd)
-    let l:files = split(globpath('.', '*.cabal'), '\n')
+    call s:debug('dir: ' . l:dir)
+    let l:files = split(globpath(l:dir, '*.cabal'), '\n')
     call s:debug('globpath: ' . join(l:files, ' '))
     if len(l:files) == 1
-      let l:cabal_dir = l:cwd
       break
     endif
 
-    exec 'cd ..'
-    if l:cwd == getcwd()
+    let l:new_dir = fnamemodify(l:dir, ':h')
+    if l:dir == l:new_dir
+      let l:dir = ''
       break
+    else
+      let l:dir = l:new_dir
     endif
   endwhile
 
-  exec 'cd ' . l:old_cwd
-  return l:cabal_dir
+  return l:dir
 endfunction
 
 
