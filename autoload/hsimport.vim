@@ -123,7 +123,8 @@ function! s:source_files_containing(symbol)
   let l:topLevelFuncRegex = '^' . a:symbol . '\s*::.*$'
   let l:topLevelOpRegex   = '^\(' . a:symbol . '\)\s*::.*$'
   let l:grepRegex         = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
-  let l:grpCmd            = 'grep --exclude=.hdevtools.sock -Rl -E ' . l:grepRegex . ' ' . l:src_dir
+  let l:grepExclude       = '--exclude=.hdevtools.sock --exclude-dir=dist --exclude-dir=.cabal-sandbox'
+  let l:grpCmd            = 'grep -Rl -E ' . l:grepExclude . ' ' . l:grepRegex . ' ' . l:src_dir
   call s:debug('grpCmd: ' . l:grpCmd)
 
   let l:grepOutput = system(l:grpCmd)
@@ -438,19 +439,13 @@ endfunction
 function! s:src_root()
   let l:old_cwd = getcwd()
   let l:cabal_dir = ''
-  let l:prev_cwd = ''
   while 1
     let l:cwd = getcwd()
     call s:debug('cwd: ' . l:cwd)
     let l:files = split(globpath('.', '*.cabal'), '\n')
     call s:debug('globpath: ' . join(l:files, ' '))
     if len(l:files) == 1
-      if l:prev_cwd != ''
-        let l:cabal_dir = l:prev_cwd
-      else
-        let l:cabal_dir = l:cwd
-      endif
-
+      let l:cabal_dir = l:cwd
       break
     endif
 
@@ -458,7 +453,6 @@ function! s:src_root()
     if l:cwd == getcwd()
       break
     endif
-    let l:prev_cwd = l:cwd
   endwhile
 
   exec 'cd ' . l:old_cwd
