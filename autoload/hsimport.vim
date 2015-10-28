@@ -124,7 +124,7 @@ function! s:source_files_containing(symbol)
   let l:topLevelOpRegex   = '^\(' . a:symbol . '\)\s*::.*$'
   let l:grepRegex         = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
   let l:grepExclude       = '--exclude=.hdevtools.sock --exclude-dir=dist --exclude-dir=.cabal-sandbox'
-  let l:grpCmd            = 'grep -Rl -E ' . l:grepExclude . ' ' . l:grepRegex . ' ' . l:src_dir
+  let l:grpCmd            = 'grep -Rl -E ' . l:grepExclude . ' ' . l:grepRegex . ' ' . l:src_dir . ' 2>/dev/null'
   call s:debug('grpCmd: ' . l:grpCmd)
 
   let l:grepOutput = system(l:grpCmd)
