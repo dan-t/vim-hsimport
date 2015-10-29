@@ -42,9 +42,11 @@ endif
 
 command! -buffer -nargs=? HsimportModule call hsimport#import_module(<q-args>)
 command! -buffer -nargs=? HsimportSymbol call hsimport#import_symbol(<q-args>)
+command! -buffer -nargs=0 HsimportVersion call hsimport#version()
 
 let b:undo_ftplugin .= join(map([
       \ 'HsimportModule',
-      \ 'HsimportSymbol'
+      \ 'HsimportSymbol',
+      \ 'HsimportVersion'
       \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_hsimport'

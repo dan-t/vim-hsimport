@@ -471,3 +471,8 @@ function! hsimport#print_warning(msg)
   echomsg a:msg
   echohl None
 endfunction
+
+
+function! hsimport#version()
+  echo '0.4.2'
+endfunction
