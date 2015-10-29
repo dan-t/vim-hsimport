@@ -431,7 +431,7 @@ function! s:hdevtools_findsymbol(identifier, srcFiles)
   let l:output = system(l:cmd)
   let l:lines = split(l:output, '\n')
 
-  " Check if the call to hdevtools info succeeded
+  " Check if the call to hdevtools succeeded
   if v:shell_error != 0
     for l:line in l:lines
       call hsimport#print_error(l:line)
