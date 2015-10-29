@@ -110,31 +110,39 @@ endfunction
 
 
 function! s:source_files_containing(symbol)
-  let l:src_dir = s:src_root()
-  call s:debug('src_dir: ' . l:src_dir)
+  let l:srcDir = s:src_root()
+  call s:debug('srcDir: ' . l:srcDir)
 
-  if l:src_dir ==# ''
+  if l:srcDir ==# ''
     return []
   endif
 
-  let l:srcFiles = []
-  let l:dataRegex         = '^data\s*' . a:symbol . '.*$'
-  let l:typeRegex         = '^type\s*' . a:symbol . '.*$'
+  let l:dataRegex = '^data\s*' . a:symbol . '.*$'
+  let l:typeRegex = '^type\s*' . a:symbol . '.*$'
   let l:topLevelFuncRegex = '^' . a:symbol . '\s*::.*$'
-  let l:topLevelOpRegex   = '^\(' . a:symbol . '\)\s*::.*$'
-  let l:grepRegex         = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
-  let l:grepExclude       = '--exclude=.hdevtools.sock --exclude-dir=dist --exclude-dir=.cabal-sandbox'
-  let l:grpCmd            = 'grep -Rl -E ' . l:grepExclude . ' ' . l:grepRegex . ' ' . l:src_dir
+  let l:topLevelOpRegex = '^\(' . a:symbol . '\)\s*::.*$'
+  let l:grepRegex = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
+  let l:grepIncludeExclude = '--include=*.hs --exclude-dir=dist --exclude-dir=.cabal-sandbox'
+  let l:grpCmd = 'grep -Rl -E ' . l:grepIncludeExclude . ' ' . l:grepRegex . ' ' . l:srcDir
   call s:debug('grpCmd: ' . l:grpCmd)
 
-  let l:grepOutput = system(l:grpCmd)
-  call s:debug('grepOutput: ' . l:grepOutput)
+  let l:output = system(l:grpCmd)
+  call s:debug('output: ' . l:output)
+  let l:lines = split(l:output, '\n')
+
+  " Check if the call to grep succeeded
+  if v:shell_error != 0
+    for l:line in l:lines
+      call hsimport#print_error(l:line)
+    endfor
+    return []
+  endif
 
   " convert files to absolute paths and remove the current file if it's contained in the list
-  let l:files = split(l:grepOutput, '\n')
   let l:curFile = fnamemodify(expand('%'), ':p')
-  for l:file in l:files
-    let l:absFile = fnamemodify(l:file, ':p')
+  let l:srcFiles = []
+  for l:line in l:lines
+    let l:absFile = fnamemodify(l:line, ':p')
     if l:absFile !=# l:curFile
       let l:srcFiles += [l:absFile]
     endif
@@ -437,7 +445,7 @@ endfunction
 
 
 function! s:src_root()
-  let l:dir = fnamemodify(expand('%'), ':h')
+  let l:dir = fnamemodify(expand('%'), ':p:h')
   while 1
     call s:debug('dir: ' . l:dir)
     let l:files = split(globpath(l:dir, '*.cabal'), '\n')
