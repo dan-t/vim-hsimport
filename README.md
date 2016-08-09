@@ -8,12 +8,9 @@ It can create import statements for the whole module, for only the desired
 symbol/indentifier and is also able to create qualified module import
 statements.
 
-It uses [hdevtools](<https://github.com/schell/hdevtools/>) for its finding
+It uses [hdevtools](<https://github.com/hdevtools/hdevtools>) for its finding
 of modules with the desired symbol. By using `hdevtools` it should also
 support any cabal setting, a `cabal sandbox` and even `stack`.
-
-Currently no released `hdevtools` version has the `findsymbol` command.
-So you need to build `hdevtools` from `github` (see the Installation section).
 
 Currently the biggest issue is if and how modules of your current project are
 considered for the import, please see the issues section.
@@ -50,10 +47,10 @@ Installation
 
 2. Install `hdevtools`, using a `cabal sandbox` is the recommend way:
 
-        $ git clone https://github.com/schell/hdevtools
+        $ mkdir hdevtools
         $ cd hdevtools
         $ cabal sandbox init
-        $ cabal install
+        $ cabal install hdevtools
 
     Your `hdevtools` binary is now at `hdevtools/.cabal-sandbox/bin/hdevtools`.
     Ensure that the binary is reachable through your `$PATH` environment variable.
