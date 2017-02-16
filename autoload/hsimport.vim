@@ -122,7 +122,7 @@ function! s:source_files_containing(symbol)
   let l:topLevelFuncRegex = '^' . a:symbol . '\s*::.*$'
   let l:topLevelOpRegex = '^\(' . a:symbol . '\)\s*::.*$'
   let l:grepRegex = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
-  let l:grepIncludeExclude = '--include=*.hs --exclude-dir=dist --exclude-dir=.cabal-sandbox'
+  let l:grepIncludeExclude = shellescape('--include=*.hs') . ' --exclude-dir=dist --exclude-dir=.cabal-sandbox'
   let l:grpCmd = 'grep -Rl -E ' . l:grepIncludeExclude . ' ' . l:grepRegex . ' ' . l:srcDir
   call s:debug('grpCmd: ' . l:grpCmd)
 
