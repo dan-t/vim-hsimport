@@ -482,5 +482,5 @@ endfunction
 
 
 function! hsimport#version()
-  echo '0.4.3'
+  echo '0.4.4'
 endfunction
