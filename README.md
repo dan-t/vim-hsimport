@@ -64,7 +64,7 @@ Installation
 Configuration
 -------------
 
-You most likely want to add keybindings for the two available commands into your `~/.vim/after/ftplugin/haskell.vim` e.g.:
+You most likely want to add keybindings for the two available commands into your `~/.vimrc` e.g.:
 
     autocmd FileType haskell nmap <silent> <F1> :silent update <bar> HsimportModule<CR>
     autocmd FileType haskell nmap <silent> <F2> :silent update <bar> HsimportSymbol<CR>
