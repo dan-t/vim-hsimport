@@ -15,7 +15,7 @@ endif
 if !exists('s:has_hdevtools')
   let s:has_hdevtools = 0
   if !executable('hdevtools')
-    call hdevtools#print_error('hdevtools is not executable!')
+    call hsimport#print_error('hdevtools is not executable!')
     finish
   endif
   let s:has_hdevtools = 1
@@ -24,7 +24,7 @@ endif
 if !exists('s:has_grep')
   let s:has_grep = 0
   if !executable('grep')
-    call grep#print_error('grep is not executable!')
+    call hsimport#print_error('grep is not executable!')
     finish
   endif
   let s:has_grep = 1
