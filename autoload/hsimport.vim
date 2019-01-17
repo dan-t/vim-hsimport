@@ -118,10 +118,11 @@ function! s:source_files_containing(symbol)
   endif
 
   let l:dataRegex = '^data\s*' . a:symbol . '.*$'
+  let l:newtypeRegex = '^newtype\s*' . a:symbol . '.*$'
   let l:typeRegex = '^type\s*' . a:symbol . '.*$'
   let l:topLevelFuncRegex = '^' . a:symbol . '\s*::.*$'
   let l:topLevelOpRegex = '^\(' . a:symbol . '\)\s*::.*$'
-  let l:grepRegex = shellescape(l:dataRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
+  let l:grepRegex = shellescape(l:dataRegex . "|" . l:newtypeRegex . "|" . l:typeRegex . "|" . l:topLevelFuncRegex . "|" . l:topLevelOpRegex)
   let l:grepIncludeExclude = shellescape('--include=*.hs') . ' --exclude-dir=dist --exclude-dir=.cabal-sandbox'
   let l:grpCmd = 'grep -Rl -E ' . l:grepIncludeExclude . ' ' . l:grepRegex . ' ' . l:srcDir
   call s:debug('grpCmd: ' . l:grpCmd)
@@ -167,7 +168,7 @@ function! s:split_module_qualifier_and_symbol(symbol)
    let l:moduleWords = []
    let l:symbolWords = []
    let l:nonModuleWordFound = 0
-   " consider every word starting with an upper alphabetic 
+   " consider every word starting with an upper alphabetic
    " character to be part of the module qualifier, until a word
    " starting with a non upper alphabetic character or a non
    " alphabetic character is found
@@ -264,7 +265,7 @@ function! s:build_command(module, symbol, allOfSym, qualifiedName, sourceFile)
 
   let l:symParam = ''
   if a:symbol !=# ''
-    let l:symParam = '-s ' . shellescape(a:symbol) 
+    let l:symParam = '-s ' . shellescape(a:symbol)
   endif
 
   let l:allOfSymParam = ''
